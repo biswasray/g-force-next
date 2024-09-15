@@ -6,9 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
+import { graphql } from "gql.tada";
+import { ErrorLabel } from "@/components/ui/error-label";
+import { setCookie } from "@/app/actions";
 
-const SIGNIN = gql`
+const SIGNIN = graphql(`
   mutation SignIn($email: String!, $password: String!) {
     signIn(email: $email, password: $password) {
       token
@@ -21,7 +24,7 @@ const SIGNIN = gql`
       }
     }
   }
-`;
+`);
 export default function SignInForm() {
   const router = useRouter();
   const [email, setEmail] = React.useState("");
@@ -30,10 +33,25 @@ export default function SignInForm() {
   async function handleSignIn(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
-    event.preventDefault();
-    await signIn({ variables: { email, password } });
-    router.push("/dashboard");
+    try {
+      event.preventDefault();
+      await signIn({ variables: { email, password } });
+      //   router.push("/dashboard");
+    } catch (e) {
+      console.error(e);
+    }
   }
+
+  React.useEffect(() => {
+    if (data) {
+      const token = data.signIn.token;
+      setCookie("session", token)
+        .then(() => {
+          router.push("/dashboard");
+        })
+        .catch(console.error);
+    }
+  }, [data, router]);
 
   return (
     <CardContent className="space-y-4">
@@ -72,11 +90,7 @@ export default function SignInForm() {
           Sign In
         </Button>
       </div>
-      {error && (
-        <div className="text-red-500 text-sm" color="red">
-          {error.message}
-        </div>
-      )}
+      <ErrorLabel error={error} />
     </CardContent>
   );
 }
