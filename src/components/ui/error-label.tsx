@@ -1,7 +1,12 @@
 import { ApolloError, ServerError } from "@apollo/client";
+import { SerializedError } from "@reduxjs/toolkit";
 import React from "react";
 
-export function ErrorLabel({ error }: { error?: ApolloError | Error }) {
+export function ErrorLabel({
+  error,
+}: {
+  error?: ApolloError | SerializedError | Error;
+}) {
   if (!error) {
     return <></>;
   }

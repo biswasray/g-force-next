@@ -6,10 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@apollo/client";
+// import { useMutation } from "@apollo/client";
 import { graphql } from "gql.tada";
 import { ErrorLabel } from "@/components/ui/error-label";
 import { setCookie } from "@/app/actions";
+import { useSignInMutation } from "@/store/services/generated";
+import { useAppSelector } from "@/store";
 
 const SIGNIN = graphql(`
   mutation SignIn($email: String!, $password: String!) {
@@ -29,13 +31,18 @@ export default function SignInForm() {
   const router = useRouter();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [signIn, { data, loading, error }] = useMutation(SIGNIN);
+  const [signIn, { data, isLoading, error }] = useSignInMutation();
+  const dd = useAppSelector((state) => state.api.mutations);
+  // dd["SignIn"].
+  // const [signIn, { data, loading, error }] = useMutation(SIGNIN);
+
   async function handleSignIn(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
     try {
       event.preventDefault();
-      await signIn({ variables: { email, password } });
+      await signIn({ email, password });
+      // await signIn({ variables: { email, password } });
       //   router.push("/dashboard");
     } catch (e) {
       console.error(e);
@@ -86,7 +93,7 @@ export default function SignInForm() {
           <Spinner loading></Spinner>
           Bookmark
         </Button> */}
-        <Button onClick={handleSignIn} className="ml-auto" loading={loading}>
+        <Button onClick={handleSignIn} className="ml-auto" loading={isLoading}>
           Sign In
         </Button>
       </div>

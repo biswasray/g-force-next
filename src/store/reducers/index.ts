@@ -3,11 +3,13 @@ import { authSlice } from "./authSlice";
 import { RESET_STATE } from "../actions";
 import { loaderSlice } from "./loaderSlice";
 import { progressCounterSlice } from "./progressCounter";
+import { api } from "../services/generated";
 
 const rootReducer = combineReducers({
   [authSlice.name]: authSlice.reducer,
   [loaderSlice.name]: loaderSlice.reducer,
   [progressCounterSlice.name]: progressCounterSlice.reducer,
+  [api.reducerPath]: api.reducer,
 });
 
 export const defaultInitialState = {

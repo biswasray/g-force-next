@@ -8,13 +8,13 @@ const config: CodegenConfig = {
       plugins: [
         "typescript",
         "typescript-resolvers",
-        {
-          "typescript-rtk-query": {
-            importBaseApiFrom: "./baseApi",
-            exportHooks: true,
-          },
-        },
+        "typescript-operations",
+        "typescript-rtk-query",
       ],
+      config: {
+        importBaseApiFrom: "./baseApi",
+        exportHooks: true,
+      },
     },
   },
 };
