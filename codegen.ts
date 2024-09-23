@@ -4,17 +4,17 @@ const config: CodegenConfig = {
   schema: "./src/lib/graphql/schema.graphql",
   documents: "./src/lib/graphql/documents/**/*.graphql",
   generates: {
-    "./src/store/services/generated.ts": {
+    "./src/services/generated.tsx": {
       plugins: [
         "typescript",
         "typescript-resolvers",
         "typescript-operations",
-        "typescript-rtk-query",
+        "typescript-react-apollo",
       ],
       config: {
-        importBaseApiFrom: "./baseApi",
-        exportHooks: true,
+        withComponent: true,
       },
+      hooks: { afterAllFileWrite: ["eslint --fix"] },
     },
   },
 };
